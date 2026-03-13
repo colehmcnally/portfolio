@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cole McNally</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0B0B09;
+      --surface: #141412;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.14);
+      --text: #F0EDE6;
+      --muted: #6B6860;
+      --accent: #D4F13A;
+      --accent-dim: rgba(212,241,58,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: rgba(11,11,9,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 160px 48px 100px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 .line-muted {
+      color: var(--muted);
+    }
+
+    .hero-desc {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #9B9890;
+      max-width: 480px;
+      font-weight: 400;
+      margin-bottom: 48px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 2px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0B0B09;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #e8ff5a;
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── PROJECTS ── */
+    .projects-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 48px 120px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .section-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .project-card {
+      background: var(--bg);
+      padding: 40px 40px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover {
+      background: var(--surface);
+    }
+
+    .project-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .project-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .project-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .project-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .status-dot.active { background: var(--accent); }
+    .status-dot.exited { background: var(--muted); }
+
+    .status-active { color: var(--accent); }
+    .status-exited { color: var(--muted); }
+
+    .project-name {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .project-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #7A7870;
+      font-weight: 400;
+      flex: 1;
+    }
+
+    .project-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 2px;
+    }
+
+    .project-arrow {
+      font-size: 20px;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+
+    .project-card:hover .project-arrow {
+      color: var(--accent);
+      transform: translate(3px, -3px);
+    }
+
+    .project-links-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .project-ext-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      padding-bottom: 1px;
+    }
+
+    .project-ext-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .hero { padding: 120px 24px 80px; }
+      .divider { padding: 0 24px; }
+      .projects-section { padding: 60px 24px 80px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card { padding: 28px 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-name" href="#">Cole McNally</a>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="https://github.com/colemcnally" target="_blank">GitHub ↗</a></li>
+      <li><a href="https://linkedin.com/in/colemcnally" target="_blank">LinkedIn ↗</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">Builder / Investor / Athlete</div>
+    <h1>
+      Cole<br />
+      <span class="line-muted">McNally</span>
+    </h1>
+    <p class="hero-desc">
+      Self-taught engineer building at the intersection of AI and real-world problems. Brooklyn.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#projects">View Projects</a>
+      <a class="btn btn-ghost" href="https://github.com/colemcnally" target="_blank">GitHub →</a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="projects-section" id="projects">
+    <div class="section-header">
+      <span class="section-title">Projects</span>
+      <span class="section-count">03</span>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- Metron -->
+      <div class="project-card">
+        <div class="project-card-top">
+          <span class="project-number">01</span>
+          <span class="project-status status-active">
+            <span class="status-dot active"></span>Active
+          </span>
+        </div>
+        <div class="project-name">Metron</div>
+        <div class="project-desc">
+          AI-powered triathlon and endurance training app. Builds personalized plans, adapts in real time, and integrates an LLM coach. Built for serious athletes.
+        </div>
+        <div class="project-card-bottom">
+          <div>
+            <div class="project-tags" style="margin-bottom:10px;">
+              <span class="tag">iOS</span>
+              <span class="tag">AI</span>
+              <span class="tag">Swift</span>
+            </div>
+            <div class="project-links-row">
+              <a class="project-ext-link" href="#" target="_blank">GitHub →</a>
+              <a class="project-ext-link" href="#" target="_blank">TestFlight →</a>
+            </div>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+
+      <!-- Soratour -->
+      <div class="project-card">
+        <div class="project-card-top">
+          <span class="project-number">02</span>
+          <span class="project-status status-active">
+            <span class="status-dot active"></span>Active
+          </span>
+        </div>
+        <div class="project-name">Soratour</div>
+        <div class="project-desc">
+          AI-guided tours for museums and campuses. Turns static spaces into interactive, personalized experiences through conversational navigation.
+        </div>
+        <div class="project-card-bottom">
+          <div>
+            <div class="project-tags" style="margin-bottom:10px;">
+              <span class="tag">Web</span>
+              <span class="tag">AI</span>
+              <span class="tag">Next.js</span>
+            </div>
+            <div class="project-links-row">
+              <a class="project-ext-link" href="#" target="_blank">GitHub →</a>
+              <a class="project-ext-link" href="#" target="_blank">Demo →</a>
+            </div>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+
+      <!-- OffCourt -->
+      <div class="project-card" style="grid-column: 1 / -1;">
+        <div class="project-card-top">
+          <span class="project-number">03</span>
+          <span class="project-status status-exited">
+            <span class="status-dot exited"></span>Exited
+          </span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;">
+          <div>
+            <div class="project-name" style="margin-bottom:20px;">OffCourt</div>
+            <div class="project-desc">
+              Social platform for athletes — where competition and community meet off the field. Led product 0-to-1 as COO.
+            </div>
+          </div>
+          <div class="project-card-bottom" style="align-self:end;">
+            <div>
+              <div class="project-tags" style="margin-bottom:10px;">
+                <span class="tag">Mobile</span>
+                <span class="tag">Social</span>
+                <span class="tag">Product</span>
+                <span class="tag">COO</span>
+              </div>
+              <div class="project-links-row">
+                <a class="project-ext-link" href="#" target="_blank">GitHub →</a>
+                <a class="project-ext-link" href="#" target="_blank">Website →</a>
+              </div>
+            </div>
+            <span class="project-arrow">↗</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-name">Cole McNally — 2026</span>
+    <div class="footer-links">
+      <a href="https://github.com/colemcnally" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/colemcnally" target="_blank">LinkedIn</a>
+      <a href="mailto:cole@gmail.com">Email</a>
+    </div>
+  </footer>
+
+</body>
+</html>
