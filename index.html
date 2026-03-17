@@ -78,6 +78,66 @@
     .nav-links a:hover { color: var(--accent); }
 
     /* ── HERO BACKGROUND ── */
+    /* ── CUSTOM CURSOR ── */
+    body, a, button, .btn, .project-card, [data-project] { cursor: none !important; }
+    #cursor-dot {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid rgba(212,241,58,0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+    }
+    #cursor-ring.hovering {
+      width: 48px;
+      height: 48px;
+      border-color: rgba(212,241,58,0.75);
+    }
+
+    /* ── WISPS ── */
+    .cursor-wisp {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9996;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: wisp-out 0.9s ease-out forwards;
+    }
+    @keyframes wisp-out {
+      0%   { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0;    transform: translate(-50%, -130%) scale(0.15); }
+    }
+
+    /* ── CLICK PULSE ── */
+    .cursor-pulse {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9997;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: pulse-out 0.55s ease-out forwards;
+    }
+    @keyframes pulse-out {
+      0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+    }
+
     .hero-bg {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -496,6 +556,9 @@
 </head>
 <body>
 
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
   <nav>
     <a class="nav-name" href="#">Cole McNally</a>
     <ul class="nav-links">
@@ -735,6 +798,65 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.project-card').forEach(card => observer.observe(card));
+
+    // ── CUSTOM CURSOR ──
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let ringX = window.innerWidth / 2, ringY = window.innerHeight / 2;
+    let dotX  = ringX, dotY = ringY;
+
+    // Wisp trail — spawn a wisp every ~28px of movement
+    let lastWispX = dotX, lastWispY = dotY;
+    const wispSizes = [6, 8, 5, 7, 6];
+    let wispIdx = 0;
+
+    window.addEventListener('mousemove', e => {
+      dotX = e.clientX;
+      dotY = e.clientY;
+      dot.style.left = dotX + 'px';
+      dot.style.top  = dotY + 'px';
+
+      const dx = dotX - lastWispX, dy = dotY - lastWispY;
+      if (Math.sqrt(dx*dx + dy*dy) > 28) {
+        const w = document.createElement('div');
+        const sz = wispSizes[wispIdx++ % wispSizes.length];
+        w.className = 'cursor-wisp';
+        w.style.left   = dotX + 'px';
+        w.style.top    = dotY + 'px';
+        w.style.width  = sz + 'px';
+        w.style.height = sz + 'px';
+        w.style.background = `radial-gradient(circle, rgba(212,241,58,${0.55 + Math.random()*0.3}) 0%, transparent 70%)`;
+        document.body.appendChild(w);
+        setTimeout(() => w.remove(), 900);
+        lastWispX = dotX;
+        lastWispY = dotY;
+      }
+    }, { passive: true });
+
+    // Ring follows with lag
+    (function animateRing() {
+      ringX += (dotX - ringX) * 0.1;
+      ringY += (dotY - ringY) * 0.1;
+      ring.style.left = ringX + 'px';
+      ring.style.top  = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    // Ring expand on hover
+    document.querySelectorAll('a, button, .project-card, .btn').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+    });
+
+    // Click pulse
+    window.addEventListener('click', e => {
+      const p = document.createElement('div');
+      p.className = 'cursor-pulse';
+      p.style.left = e.clientX + 'px';
+      p.style.top  = e.clientY + 'px';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 600);
+    });
   </script>
 
   <footer>
